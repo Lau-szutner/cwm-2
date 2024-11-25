@@ -20,9 +20,10 @@ const Register = ({ loginFirst }) => {
 
       console.log('Usuario registrado con éxito!', user.uid);
 
-      await addDoc(collection(db, 'users'), {
+      await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
         id: user.uid,
+        displayName: user.displayName || 'Sin nombre', // Si tienes displayName, guárdalo
       });
     } catch (err) {
       console.error('Error en el registro:', err);

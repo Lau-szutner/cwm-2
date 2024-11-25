@@ -5,11 +5,13 @@ import perfil from '../img/fotoperfil.jpg';
 import MyPosts from './MyPosts';
 import { onAuthStateChanged } from 'firebase/auth';
 import NewPostForm from './NewPostForm';
+import UserProfile from './UserProfile'; // Asegúrate de importar el componente UserProfile
 
 const NavBar = () => {
   const [user, setUser] = useState(null);
-  const [myPosts, setMyPosts] = useState(false); // Cambiado a false para ocultar al inicio
+  const [myPosts, setMyPosts] = useState(false);
   const [newPost, setNewPost] = useState(false);
+  const [showModal, setShowModal] = useState(false); // Estado para manejar la visibilidad de la modal
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -23,28 +25,7 @@ const NavBar = () => {
 
     // Cleanup del suscriptor para evitar fugas de memoria
     return () => unsubscribe();
-  }, []); // Dependencias vacías, se ejecuta solo al montar el componente
-
-  const handleNewPost = async () => {
-    if (!user) {
-      console.error('no hay usuario logeado');
-      return;
-    }
-
-    try {
-      const newPost = await addDoc(collection(db, `posts`), {
-        author: 'prueba 1',
-        content:
-          'React es una biblioteca de JavaScript para construir interfaces de usuario.',
-        date: new Date(),
-        likes: '10',
-        title: 'Title prueba',
-      });
-      console.log('Documento escrito con ID: ', newPost.id);
-    } catch (e) {
-      console.error('Error al agregar el documento: ', e);
-    }
-  };
+  }, []);
 
   const logout = async () => {
     try {
@@ -55,15 +36,14 @@ const NavBar = () => {
     }
   };
 
-  // Función para manejar la visibilidad de los posteos
-  const handlePostToggle = () => {
-    setMyPosts(true); // Mostrar mis posteos
-    setNewPost(false); // Ocultar nuevo post
+  // Función para abrir la modal de perfil
+  const openModal = () => {
+    setShowModal(true);
   };
 
-  const handleNewPostToggle = () => {
-    setMyPosts(false); // Ocultar mis posteos
-    setNewPost(true); // Mostrar formulario nuevo post
+  // Función para cerrar la modal de perfil
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -72,15 +52,21 @@ const NavBar = () => {
         <h1 className="text-3xl">Reddot .</h1>
         <ul className="flex text-xl gap-10 items-center">
           <li>Home</li>
-          <button onClick={handlePostToggle}>Posteos</button>
+          <button onClick={() => setMyPosts(true)}>Posteos</button>
           <li>Foros</li>
-          <button onClick={handleNewPostToggle}>Crear</button>
+          <button onClick={() => setNewPost(true)}>Crear</button>
         </ul>
         <div className="flex gap-5">
-          <img src={perfil} alt="" className="h-10 rounded-full" />
+          <img
+            src={perfil}
+            alt="Foto de perfil"
+            className="h-10 rounded-full cursor-pointer"
+            onClick={openModal} // Al hacer clic en la imagen, abre la modal
+          />
+
           <button
             className="bg-red-500 h-10 w-fit p-2 rounded-md"
-            onClick={() => logout()}
+            onClick={logout}
           >
             Logout
           </button>
@@ -90,6 +76,22 @@ const NavBar = () => {
       {/* Solo muestra el formulario de nuevo post o los posteos */}
       {newPost && <NewPostForm cerrarFormulario={() => setNewPost(false)} />}
       {myPosts && <MyPosts />}
+
+      {/* Modal de perfil */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-8 rounded-lg w-96">
+            <button
+              className="absolute top-2 right-2 text-xl"
+              onClick={closeModal}
+            >
+              X
+            </button>
+            <UserProfile user={user} />{' '}
+            {/* Pasa el objeto user al componente UserProfile */}
+          </div>
+        </div>
+      )}
     </>
   );
 };

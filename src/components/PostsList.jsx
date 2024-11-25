@@ -103,13 +103,21 @@ const PostsList = () => {
   return (
     <div className="text-white rounded-md flex flex-col items-center justify-center">
       <h1 className="text-3xl text-center">Lista de Posteos</h1>
-      <div className="grid p-10 gap-5 lg:w-10/12 mx-auto">
+      <div className="grid p-10 gap-5 lg:w-10/12">
         {posts.map((post) => (
           <div
             key={post.id}
             className="bg-zinc-600 rounded-md p-5 hover:bg-zinc-700 ease-in-out duration-300 flex flex-col lg:w-6/12"
           >
             <h2 className="text-2xl truncate">{post.title}</h2>
+
+            {/* Agregar el campo displayName aquí */}
+            {post.displayName && (
+              <p className="text-xl text-gray-300 mt-2">
+                Por: {post.displayName}
+              </p>
+            )}
+
             <div className="flex gap-10 my-5 items-center">
               <p className="text-xl">{post.author}</p>
             </div>

@@ -1,31 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../services/firebase';
+import { collection, addDoc, getDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { db } from '../services/firebase';
 
 const NewPostForm = ({ cerrarFormulario }) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [author, setAuthor] = useState(''); // Estado para el autor
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const auth = getAuth(); // Obtener la instancia de autenticación
-    const user = auth.currentUser; // Obtener el usuario actual
+    const fetchUserData = async () => {
+      try {
+        const user = getAuth().currentUser;
+        if (user) {
+          const userRef = doc(db, 'users', user.uid); // Referencia al documento del usuario
+          const docSnap = await getDoc(userRef);
 
-    if (user) {
-      // Configura el autor usando el displayName o email
-      setAuthor(user.displayName || user.email);
-    }
+          if (docSnap.exists()) {
+            setAuthor(docSnap.data().displayName || user.email); // Establece displayName o fallback al email
+          } else {
+            setError('No se encontró la información del usuario');
+          }
+        } else {
+          setError('No hay usuario autenticado');
+        }
+      } catch (err) {
+        console.error('Error al obtener los datos del usuario:', err);
+        setError('Error al obtener los datos del usuario');
+      }
+    };
+
+    fetchUserData(); // Llamada para obtener los datos del usuario
   }, []);
 
   const handleNewPost = async (e) => {
     e.preventDefault();
-    console.log(body);
-    console.log(title);
+    if (!author) {
+      setError('No se pudo obtener el nombre del autor');
+      return;
+    }
 
     try {
+      // Crear nuevo post en Firestore con el autor
       const newPost = await addDoc(collection(db, 'posts'), {
-        author: author, // Utilizar el autor dinámico desde el estado
+        author: author, // Usar el displayName actualizado
         content: body,
         title: title,
         date: new Date(),
@@ -37,11 +56,13 @@ const NewPostForm = ({ cerrarFormulario }) => {
       setBody('');
     } catch (e) {
       console.error('Error al agregar el documento: ', e);
+      setError('Error al agregar el documento');
     }
   };
 
   return (
     <>
+      {error && <p className="text-red-500">{error}</p>}
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <form
           className="bg-zinc-700 p-5 rounded-xl w-6/12 grid gap-10"
