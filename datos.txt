@@ -1,0 +1,9 @@
+Carrera: Diseño y programación web 
+Materia: Clientes web mobile
+Cuatrimestre: 4to cuatrimestre
+Año: 2024
+Turno: Noche 
+Comisión: DWN4AV
+Nombre completo: Lautaro Fernandez Szutner
+Docente: Amendolara Nicolás
+carácter de entrega: 1er parcial
