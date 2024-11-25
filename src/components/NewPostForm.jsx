@@ -6,7 +6,7 @@ import { db } from '../services/firebase';
 const NewPostForm = ({ cerrarFormulario }) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const [author, setAuthor] = useState(''); // Estado para el autor
+  const [author, setAuthor] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -14,11 +14,11 @@ const NewPostForm = ({ cerrarFormulario }) => {
       try {
         const user = getAuth().currentUser;
         if (user) {
-          const userRef = doc(db, 'users', user.uid); // Referencia al documento del usuario
+          const userRef = doc(db, 'users', user.uid);
           const docSnap = await getDoc(userRef);
 
           if (docSnap.exists()) {
-            setAuthor(docSnap.data().displayName || user.email); // Establece displayName o fallback al email
+            setAuthor(docSnap.data().displayName || user.email);
           } else {
             setError('No se encontró la información del usuario');
           }
@@ -31,7 +31,7 @@ const NewPostForm = ({ cerrarFormulario }) => {
       }
     };
 
-    fetchUserData(); // Llamada para obtener los datos del usuario
+    fetchUserData();
   }, []);
 
   const handleNewPost = async (e) => {
@@ -45,20 +45,19 @@ const NewPostForm = ({ cerrarFormulario }) => {
     }
 
     try {
-      // Crear nuevo post en Firestore con el autor y email
       const newPost = await addDoc(collection(db, 'posts'), {
-        author: author, // Usar el displayName actualizado
-        email: user.email, // Guardar el email del autor
+        author: author,
+        email: user.email,
         content: body,
         title: title,
         date: new Date(),
-        likes: 10, // Puedes cambiarlo según sea necesario
+        likes: 10,
       });
 
       console.log('Documento escrito con ID: ', newPost.id);
       setTitle('');
       setBody('');
-      cerrarFormulario(); // Cerrar el formulario después de agregar el post
+      cerrarFormulario();
     } catch (e) {
       console.error('Error al agregar el documento: ', e);
       setError('Error al agregar el documento');

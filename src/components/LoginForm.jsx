@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { loginEmailPassword } from '../services/firebase'; // Importamos la función desde firebase.js
-
+import { loginEmailPassword } from '../services/firebase';
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,13 +8,12 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Llamamos a la función de login pasándole los valores de email y password
       const userCredential = await loginEmailPassword(email, password);
 
-      console.log('Logged in:', userCredential.user); // Usuario logueado exitosamente
+      console.log('Logged in:', userCredential.user);
     } catch (err) {
-      setError(err.message); // Manejo del error en la UI
-      console.error('Error during login:', err.message); // Para depuración
+      setError(err.message);
+      console.error('Error during login:', err.message);
     }
   };
 
@@ -35,8 +33,8 @@ const LoginForm = () => {
           id="email"
           placeholder="correo@ejemplo.com"
           className="p-2 rounded-md h-fit"
-          value={email} // Asociamos el estado del email al input
-          onChange={(e) => setEmail(e.target.value)} // Actualizamos el estado cuando el usuario escribe
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <label htmlFor="password" className="text-xl">
@@ -48,12 +46,11 @@ const LoginForm = () => {
           id="password"
           placeholder="Contraseña"
           className="p-2 rounded-md h-fit"
-          value={password} // Asociamos el estado de password al input
-          onChange={(e) => setPassword(e.target.value)} // Actualizamos el estado cuando el usuario escribe
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         {error && <p className="text-red-500">{error}</p>}{' '}
-        {/* Mostrar error si ocurre */}
         <button
           type="submit"
           className="bg-amber-600 text-black p-3 rounded-md text-white h-fit"

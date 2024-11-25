@@ -54,18 +54,16 @@ const NavBar = () => {
           <li>Home</li>
           <button
             className="text-white"
-            onClick={() => setMyPosts((prevState) => !prevState)} // Cambia el estado de myPosts
+            onClick={() => setMyPosts((prevState) => !prevState)}
           >
             {myPosts ? 'Cerrar Posteos' : 'Ver Posteos'}{' '}
-            {/* Cambia el texto según el estado */}
           </button>
           <li>Foros</li>
           <button
             className="text-white"
-            onClick={() => setNewPost((prevState) => !prevState)} // Cambia el estado de newPost
+            onClick={() => setNewPost((prevState) => !prevState)}
           >
             {newPost ? 'Cerrar Crear' : 'Crear'}{' '}
-            {/* Cambia el texto según el estado */}
           </button>
         </ul>
         <div className="flex gap-5">
@@ -73,7 +71,7 @@ const NavBar = () => {
             src={perfil}
             alt="Foto de perfil"
             className="h-10 rounded-full cursor-pointer"
-            onClick={openModal} // Al hacer clic en la imagen, abre la modal
+            onClick={openModal}
           />
 
           <button
@@ -85,11 +83,9 @@ const NavBar = () => {
         </div>
       </nav>
 
-      {/* Solo muestra el formulario de nuevo post o los posteos */}
       {newPost && <NewPostForm cerrarFormulario={() => setNewPost(false)} />}
       {myPosts && <MyPosts />}
 
-      {/* Modal de perfil */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-8 rounded-lg w-96">
@@ -100,7 +96,6 @@ const NavBar = () => {
               X
             </button>
             <UserProfile user={user} />{' '}
-            {/* Pasa el objeto user al componente UserProfile */}
           </div>
         </div>
       )}

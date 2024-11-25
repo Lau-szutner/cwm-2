@@ -23,7 +23,7 @@ const Register = ({ loginFirst }) => {
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
         id: user.uid,
-        displayName: user.displayName || 'Sin nombre', // Si tienes displayName, guárdalo
+        displayName: user.displayName || 'Sin nombre',
       });
     } catch (err) {
       console.error('Error en el registro:', err);

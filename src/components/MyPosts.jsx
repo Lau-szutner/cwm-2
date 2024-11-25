@@ -109,7 +109,6 @@ const MyPosts = () => {
         )}
       </div>
 
-      {/* Formulario para editar publicación */}
       {editingPost && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <form

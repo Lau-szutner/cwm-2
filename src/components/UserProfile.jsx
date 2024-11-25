@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../services/firebase'; // Asegúrate de importar Firestore y Firebase Auth
-import { doc, getDoc, updateDoc } from 'firebase/firestore'; // Importa las funciones necesarias de Firestore
+import { auth, db } from '../services/firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState(null); // Almacenará los datos del usuario
-  const [error, setError] = useState(null); // Manejar errores
-  const [newDisplayName, setNewDisplayName] = useState(''); // Para editar el nombre
-  const [isEditing, setIsEditing] = useState(false); // Estado para manejar si estamos en modo edición
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
+  const [newDisplayName, setNewDisplayName] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const user = auth.currentUser;
         if (user) {
-          console.log('UID del usuario autenticado:', user.uid); // Verifica que el UID sea correcto
+          console.log('UID del usuario autenticado:', user.uid);
           const userRef = doc(db, 'users', user.uid);
           const docSnap = await getDoc(userRef);
 
           if (docSnap.exists()) {
             setUserData(docSnap.data());
-            setNewDisplayName(docSnap.data().displayName || ''); // Inicializa el nombre en el estado
+            setNewDisplayName(docSnap.data().displayName || '');
           } else {
             console.log('No se encontró el documento de usuario');
             setError('No se encontró la información del usuario');
@@ -33,24 +33,22 @@ const UserProfile = () => {
       }
     };
 
-    // Llama a la función de fetchUserData cuando el componente se monta
     fetchUserData();
-  }, []); // Se ejecuta una vez cuando el componente se monta
+  }, []);
 
-  // Función para actualizar el displayName en Firestore
   const handleUpdateDisplayName = async () => {
     const user = auth.currentUser;
     if (user) {
       try {
         const userRef = doc(db, 'users', user.uid);
         await updateDoc(userRef, {
-          displayName: newDisplayName, // Actualiza el nombre del usuario
+          displayName: newDisplayName,
         });
         setUserData((prevData) => ({
           ...prevData,
           displayName: newDisplayName,
         }));
-        setIsEditing(false); // Salir del modo de edición
+        setIsEditing(false);
       } catch (err) {
         console.error('Error al actualizar el nombre:', err);
         setError('Error al actualizar los datos');
@@ -58,7 +56,6 @@ const UserProfile = () => {
     }
   };
 
-  // Verifica si hay un error o si no hay datos del usuario
   if (error) {
     return (
       <div className="text-center text-red-500">
@@ -67,7 +64,6 @@ const UserProfile = () => {
     );
   }
 
-  // Si no hay datos del usuario, muestra un mensaje
   if (!userData) {
     return (
       <div className="text-center">

@@ -9,25 +9,23 @@ import {
 } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../services/firebase'; // Asegúrate de que 'auth' esté importado desde tu configuración de Firebase
+import { auth } from '../services/firebase';
 
 const PostsList = () => {
   const [posts, setPosts] = useState([]);
   const [newComments, setNewComments] = useState({});
   const [comments, setComments] = useState({});
-  const [userEmail, setUserEmail] = useState(''); // Estado para almacenar el email del usuario autenticado
+  const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
-    // Verifica el estado de autenticación del usuario
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUserEmail(user.email); // Almacena el email del usuario autenticado
+        setUserEmail(user.email);
       } else {
-        setUserEmail(''); // Resetea el email si no hay usuario autenticado
+        setUserEmail('');
       }
     });
 
-    // Limpia el suscriptor en el desmontaje del componente
     return () => unsubscribe();
   }, []);
 
@@ -65,10 +63,10 @@ const PostsList = () => {
   }, []);
 
   const handleAddComment = async (postId) => {
-    if (!newComments[postId]?.trim()) return; // Verifica que el comentario no esté vacío
+    if (!newComments[postId]?.trim()) return;
     try {
       await addDoc(collection(db, `posts/${postId}/comments`), {
-        user: userEmail, // Usa el email del usuario autenticado
+        user: userEmail,
         content: newComments[postId],
         createdAt: Timestamp.now(),
       });
@@ -77,7 +75,7 @@ const PostsList = () => {
 
       setNewComments((prevState) => ({
         ...prevState,
-        [postId]: '', // Limpia el comentario solo para el post actual
+        [postId]: '',
       }));
     } catch (error) {
       console.error('Error adding comment:', error);
