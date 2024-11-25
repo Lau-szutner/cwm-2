@@ -22,7 +22,7 @@ const LoginForm = () => {
   return (
     <div className="container mx-auto flex justify-center h-full items-center">
       <form
-        className="grid bg-gray-200 p-10 rounded-xl w-6/12 gap-5 h-fit"
+        className="grid bg-zinc-500 p-10 rounded-xl w-6/12 gap-5 h-fit"
         onSubmit={handleSubmit}
       >
         <h1 className="text-4xl text-center"> Iniciar sesion</h1>

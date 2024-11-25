@@ -36,15 +36,19 @@ const NewPostForm = ({ cerrarFormulario }) => {
 
   const handleNewPost = async (e) => {
     e.preventDefault();
-    if (!author) {
-      setError('No se pudo obtener el nombre del autor');
+    const user = getAuth().currentUser;
+    if (!author || !user) {
+      setError(
+        'No se pudo obtener el nombre del autor o el usuario no está autenticado'
+      );
       return;
     }
 
     try {
-      // Crear nuevo post en Firestore con el autor
+      // Crear nuevo post en Firestore con el autor y email
       const newPost = await addDoc(collection(db, 'posts'), {
         author: author, // Usar el displayName actualizado
+        email: user.email, // Guardar el email del autor
         content: body,
         title: title,
         date: new Date(),
@@ -54,6 +58,7 @@ const NewPostForm = ({ cerrarFormulario }) => {
       console.log('Documento escrito con ID: ', newPost.id);
       setTitle('');
       setBody('');
+      cerrarFormulario(); // Cerrar el formulario después de agregar el post
     } catch (e) {
       console.error('Error al agregar el documento: ', e);
       setError('Error al agregar el documento');

@@ -9,8 +9,8 @@ import UserProfile from './UserProfile'; // Asegúrate de importar el componente
 
 const NavBar = () => {
   const [user, setUser] = useState(null);
-  const [myPosts, setMyPosts] = useState(false);
-  const [newPost, setNewPost] = useState(false);
+  const [myPosts, setMyPosts] = useState(false); // Estado para controlar la visibilidad de MyPosts
+  const [newPost, setNewPost] = useState(false); // Estado para controlar la visibilidad del formulario de nuevo post
   const [showModal, setShowModal] = useState(false); // Estado para manejar la visibilidad de la modal
 
   useEffect(() => {
@@ -52,9 +52,21 @@ const NavBar = () => {
         <h1 className="text-3xl">Reddot .</h1>
         <ul className="flex text-xl gap-10 items-center">
           <li>Home</li>
-          <button onClick={() => setMyPosts(true)}>Posteos</button>
+          <button
+            className="text-white"
+            onClick={() => setMyPosts((prevState) => !prevState)} // Cambia el estado de myPosts
+          >
+            {myPosts ? 'Cerrar Posteos' : 'Ver Posteos'}{' '}
+            {/* Cambia el texto según el estado */}
+          </button>
           <li>Foros</li>
-          <button onClick={() => setNewPost(true)}>Crear</button>
+          <button
+            className="text-white"
+            onClick={() => setNewPost((prevState) => !prevState)} // Cambia el estado de newPost
+          >
+            {newPost ? 'Cerrar Crear' : 'Crear'}{' '}
+            {/* Cambia el texto según el estado */}
+          </button>
         </ul>
         <div className="flex gap-5">
           <img
