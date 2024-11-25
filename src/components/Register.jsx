@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { collection, doc, setDoc, addDoc } from 'firebase/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { db, auth } from '../services/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -7,6 +7,11 @@ const Register = ({ loginFirst }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const generateDisplayName = () => {
+    const randomNumber = Math.floor(Math.random() * 10000);
+    return `Usuario${randomNumber}`;
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -20,11 +25,15 @@ const Register = ({ loginFirst }) => {
 
       console.log('Usuario registrado con éxito!', user.uid);
 
+      const displayName = generateDisplayName();
+
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
         id: user.uid,
-        displayName: user.displayName || 'Sin nombre',
+        displayName: displayName,
       });
+
+      console.log('Nombre de usuario asignado:', displayName);
     } catch (err) {
       console.error('Error en el registro:', err);
       setError(
